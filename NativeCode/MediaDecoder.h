@@ -34,6 +34,7 @@ extern "C" {
 	__declspec(dllexport) bool nativeIsContentReady(int id);
 	__declspec(dllexport) bool nativeIsVideoBufferFull(int id);
 	__declspec(dllexport) bool nativeIsVideoBufferEmpty(int id);
+	__declspec(dllexport) double nativeGetVideoFrameTimestamp(int id);
 	//	Audio
 	__declspec(dllexport) bool nativeIsAudioEnabled(int id);
 	__declspec(dllexport) void nativeSetAudioEnable(int id, bool isEnable);

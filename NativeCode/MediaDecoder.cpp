@@ -381,6 +381,13 @@ bool nativeIsVideoBufferEmpty(int id) {
 	return iter->avhandler->isVideoBufferEmpty();
 }
 
+double nativeGetVideoFrameTimestamp(int id) {
+	VideoContextIter iter;
+	if (!getVideoContextIter(id, &iter) || iter->avhandler == NULL) { return -1; }
+
+	return iter->avhandler->getVideoInfo().lastTime;
+}
+
 /*	This function is for thumbnail extraction.*/
 void nativeLoadThumbnail(int id, float time, void* texY, void* texU, void* texV) {
 	if (g_D3D11Device == NULL) {
