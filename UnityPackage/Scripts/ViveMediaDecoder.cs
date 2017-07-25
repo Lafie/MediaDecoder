@@ -459,10 +459,17 @@ namespace HTC.UnityPlugin.Multimedia
 
             print(LOG_TAG + " audioDataTime " + audioDataTime);
 
+            // initialize audio data array and related fields to avoid loop GC allocation
+            float[] audioDataSwap = new float[audioDataLength];
+            double currentTime, playTime, endTime;
+
+            // pre-allocate WaitForFixedUpdate to reduce loop GC allocation
+            WaitForFixedUpdate waitForFixedUpdate = new WaitForFixedUpdate();
+
             audioProgressTime = -1.0;           //  Used to schedule each audio clip to be played.
 			while(decoderState >= DecoderState.START) {
 				if(decoderState == DecoderState.START) {
-					double currentTime = AudioSettings.dspTime - globalStartTime;
+					currentTime = AudioSettings.dspTime - globalStartTime;
 					if(currentTime < audioTotalTime || audioTotalTime == -1.0f) {
                         if (audioDataBuff != null && audioDataBuff.Count >= audioDataLength) {
                             if (audioProgressTime == -1.0) {
@@ -476,8 +483,8 @@ namespace HTC.UnityPlugin.Multimedia
 
                             //  Re-check data length if audioDataBuff is cleared by seek.
                             if (audioDataBuff.Count >= audioDataLength) {
-                                double playTime = audioProgressTime + globalStartTime;
-                                double endTime = playTime + audioDataTime;
+                                playTime = audioProgressTime + globalStartTime;
+                                endTime = playTime + audioDataTime;
 
                                 //  If audio is late, adjust start time and re-calculate audio clip time.
                                 if (playTime <= AudioSettings.dspTime) {
@@ -486,7 +493,8 @@ namespace HTC.UnityPlugin.Multimedia
                                     endTime = playTime + audioDataTime;
                                 }
 
-                                audioSource[swapIndex].clip.SetData(audioDataBuff.GetRange(0, audioDataLength).ToArray(), 0);
+                                audioDataBuff.CopyTo(0, audioDataSwap, 0, audioDataLength);
+                                audioSource[swapIndex].clip.SetData(audioDataSwap, 0);
                                 audioSource[swapIndex].PlayScheduled(playTime);
                                 audioSource[swapIndex].SetScheduledEndTime(endTime);
                                 audioSource[swapIndex].time = (float) OVERLAP_TIME;
@@ -509,7 +517,7 @@ namespace HTC.UnityPlugin.Multimedia
                         }
                     }
 				}
-				yield return new WaitForFixedUpdate();
+				yield return waitForFixedUpdate;
 			}
         }
 
