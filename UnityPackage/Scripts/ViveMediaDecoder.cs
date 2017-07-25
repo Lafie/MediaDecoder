@@ -59,6 +59,9 @@ namespace HTC.UnityPlugin.Multimedia
         [DllImport(NATIVE_LIBRARY_NAME)]
         private static extern bool nativeIsContentReady(int id);
 
+        [DllImport(NATIVE_LIBRARY_NAME)]
+        private static extern double nativeGetVideoFrameTimestamp(int id);
+
         //  Audio
         [DllImport(NATIVE_LIBRARY_NAME)]
         private static extern bool nativeIsAudioEnabled(int id);
@@ -614,6 +617,11 @@ namespace HTC.UnityPlugin.Multimedia
 				return (float) (AudioSettings.dspTime - globalStartTime);
 			}
 		}
+
+        public double getVideoCurrentFrameTime()
+        {
+            return nativeGetVideoFrameTimestamp(decoderID);
+        }
 
 		public DecoderState getDecoderState() {
 			return decoderState;
