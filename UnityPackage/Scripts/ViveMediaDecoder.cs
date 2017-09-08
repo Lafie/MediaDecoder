@@ -466,9 +466,6 @@ namespace HTC.UnityPlugin.Multimedia
             float[] audioDataSwap = new float[audioDataLength];
             double currentTime, playTime, endTime;
 
-            // pre-allocate WaitForFixedUpdate to reduce loop GC allocation
-            WaitForFixedUpdate waitForFixedUpdate = new WaitForFixedUpdate();
-
             audioProgressTime = -1.0;           //  Used to schedule each audio clip to be played.
 			while(decoderState >= DecoderState.START) {
 				if(decoderState == DecoderState.START) {
@@ -520,7 +517,7 @@ namespace HTC.UnityPlugin.Multimedia
                         }
                     }
 				}
-				yield return waitForFixedUpdate;
+				yield return new WaitForFixedUpdate();
 			}
         }
 
