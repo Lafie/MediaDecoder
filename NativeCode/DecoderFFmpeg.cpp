@@ -64,6 +64,8 @@ bool DecoderFFmpeg::init(const char* filePath) {
 	if (mUseTCP) {
 		av_dict_set(&opts, "rtsp_transport", "tcp", 0);
 	}
+
+	av_dict_set(&opts, "allowed_extensions", "3gp,aac,avi,flac,mkv,m3u8,m4a,m4s,m4f,m4v,mpg,mov,mp2,mp3,mp4,mpeg,mpegts,ogg,ogv,oga,ts,vob,wav", 0);
 	
 	errorCode = avformat_open_input(&mAVFormatContext, filePath, NULL, &opts);
 	av_dict_free(&opts);
